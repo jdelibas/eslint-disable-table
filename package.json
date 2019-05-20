@@ -1,0 +1,40 @@
+{
+  "name": "eslint-disable-table",
+  "version": "1.0.0",
+  "description": "List all eslint disable rules in use",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "ava",
+    "test:watch": "./node_modules/.bin/ava --watch",
+    "coverage": "./node_modules/.bin/nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/ava",
+    "lint": "./node_modules/.bin/standard",
+    "lint:fix": "./node_modules/.bin/standard --fix",
+    "changelog": "./node_modules/.bin/conventional-changelog -i CHANGELOG.md -s -r 0"
+  },
+  "bin": "./bin/cli.js",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jdelibas/eslint-disable-table.git"
+  },
+  "author": "James Delibas <jdelibas@gmail.com> (https://jamjar.rocks/)",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://github.com/jdelibas/eslint-disable-table",
+  "bugs": "https://github.com/jdelibas/eslint-disable-table/issues",
+  "devDependencies": {
+    "ava": "^1.4.1",
+    "conventional-changelog-cli": "^2.0.21",
+    "nyc": "^14.1.1",
+    "standard": "^12.0.1"
+  },
+  "dependencies": {
+    "all-eslint-rules": "^5.0.0",
+    "cli-table": "^0.3.1",
+    "commander": "^2.20.0",
+    "extract-comments": "^1.1.0",
+    "parse-comments": "^1.0.0",
+    "recursive-readdir": "^2.2.2"
+  }
+}
