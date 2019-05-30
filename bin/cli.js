@@ -31,11 +31,8 @@ program.parse(process.argv)
 
 getTable(program.directory, program.exclude)
   .then(res => {
-    let output = JSON.stringify(res, null, 4)
-    if (!program.json) {
-      output = generateTable(res, program.directory)
-    }
-    console.log(output)
+    const output = (program.json ? JSON.stringify(res, null, 4) : generateTable(res, program.directory));
+    console.log(output);
   })
   .catch(e => {
     console.log(e)
