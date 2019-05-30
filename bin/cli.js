@@ -22,7 +22,7 @@ const { commaSeparatedList } = require('../src/optionHandlers');
       console.log('')
       console.log('  $ eslint-disable-table -j > table.json')
       console.log('  $ eslint-disable-table -e .nycoutput, coverage')
-      console.log('  $ eslint-disable-table -d ~/all-my-projects')
+      console.log('  $ eslint-disable-table -d ~/project-one, ~/project-two')
     })
 
     program.parse(process.argv)
