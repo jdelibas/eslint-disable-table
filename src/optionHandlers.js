@@ -1,7 +1,7 @@
 'use strict';
 
-function commaSeparatedList (inputStr, defaultStr = null) {
-  const str = inputStr || defaultStr || null;
+function commaSeparatedList (inputStr) {
+  const str = inputStr || null;
   const list = (str ? str.split(',') : []);
   return list.map(item => item.trim());
 }

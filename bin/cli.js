@@ -12,7 +12,7 @@ const { commaSeparatedList } = require('../src/optionHandlers');
   try {
 
     program
-      .option('-d, --directory <dir>', 'directory to inspect', commaSeparatedList, process.cwd())
+      .option('-d, --directory <dir>', 'directory to inspect', commaSeparatedList)
       .option('-j, --json', 'output json', false)
       .option('-e, --exclude <exclude>', 'exclude patterns, comma separated list', commaSeparatedList)
 
@@ -27,8 +27,10 @@ const { commaSeparatedList } = require('../src/optionHandlers');
 
     program.parse(process.argv);
 
+    const baseDirs = program.directory || [ process.cwd() ];
+
     // Prepare the output.
-    const outputPromises = program.directory.map(async baseDir =>
+    const outputPromises = baseDirs.map(async baseDir =>
       Object({
         baseDir,
         table: await getTable(baseDir, program.exclude),
