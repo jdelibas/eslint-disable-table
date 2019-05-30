@@ -5,39 +5,57 @@
 const program = require('commander')
 const getTable = require('../src')
 const generateTable = require('../src/generateTable')
+const { commaSeparatedList } = require('../src/optionHandlers');
 
-function commaSeparatedList (value, dummyPrevious) {
-  if (!value) {
-    return []
-  }
-  return value.split(',')
-}
+(async function main () {
 
-program
-  .option('-d, --directory <dir>', 'directory to inspect', process.cwd())
-  .option('-j, --json', 'output json', false)
-  .option('-e, --exclude <exclude>', 'exclude patterns, comma separated list', commaSeparatedList)
+  try {
 
-program.on('--help', () => {
-  console.log('')
-  console.log('Examples:')
-  console.log('')
-  console.log('  $ eslint-disable-table -j > table.json')
-  console.log('  $ eslint-disable-table -e .nycoutput, coverage')
-  console.log('  $ eslint-disable-table -d ~/all-my-projects')
-})
+    program
+      .option('-d, --directory <dir>', 'directory to inspect', commaSeparatedList)
+      .option('-j, --json', 'output json', false)
+      .option('-e, --exclude <exclude>', 'exclude patterns, comma separated list', commaSeparatedList)
 
-program.parse(process.argv)
+    program.on('--help', () => {
+      console.log('')
+      console.log('Examples:')
+      console.log('')
+      console.log('  $ eslint-disable-table -j > table.json')
+      console.log('  $ eslint-disable-table -e .nycoutput, coverage')
+      console.log('  $ eslint-disable-table -d ~/project-one, ~/project-two')
+    })
 
-getTable(program.directory, program.exclude)
-  .then(res => {
-    let output = JSON.stringify(res, null, 4)
-    if (!program.json) {
-      output = generateTable(res, program.directory)
+    program.parse(process.argv);
+
+    const baseDirs = program.directory || [ process.cwd() ];
+
+    // Prepare the output.
+    const outputPromises = baseDirs.map(async baseDir =>
+      Object({
+        baseDir,
+        table: await getTable(baseDir, program.exclude),
+      })
+    );
+    const outputList = await Promise.all(outputPromises);
+
+    if (program.json) { // Output as JSON.
+      const outputHash = outputList.reduce((acc, item) => {
+        acc[item.baseDir] = item.table;
+        return acc;
+      }, {});
+      const outputJson = JSON.stringify(outputHash, null, 4);
+      console.log(outputJson);
+    } else { // Output as a pretty table.
+      console.log('');
+      outputList.forEach(item => {
+        const outputTable = generateTable(item.table, item.baseDir);
+        console.log(`DIR: ${item.baseDir}\n\n${outputTable}\n`);
+      });
     }
-    console.log(output)
-  })
-  .catch(e => {
-    console.log(e)
-    process.exit(1)
-  })
+
+  } catch (err) {
+    console.error(err);
+    setTimeout(process.exit.bind(process, 1), 250); // Logging is async and takes some time to complete.
+  }
+
+}());
