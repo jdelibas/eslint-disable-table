@@ -6,15 +6,13 @@ const program = require('commander')
 const getTable = require('../src')
 const generateTable = require('../src/generateTable')
 
-function commaSeparatedList (value, dummyPrevious) {
-  if (!value) {
-    return []
-  }
-  return value.split(',')
+function commaSeparatedList (inputStr, defaultStr = null) {
+  const str = inputStr || defaultStr || null;
+  return (str ? str.split(',') : []);
 }
 
 program
-  .option('-d, --directory <dir>', 'directory to inspect', process.cwd())
+  .option('-d, --directory <dir>', 'directory to inspect', commaSeparatedList, process.cwd())
   .option('-j, --json', 'output json', false)
   .option('-e, --exclude <exclude>', 'exclude patterns, comma separated list', commaSeparatedList)
 
