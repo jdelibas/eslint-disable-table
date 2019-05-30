@@ -25,11 +25,30 @@ const { commaSeparatedList } = require('../src/optionHandlers');
       console.log('  $ eslint-disable-table -d ~/project-one, ~/project-two')
     })
 
-    program.parse(process.argv)
+    program.parse(process.argv);
 
-    const res = await getTable(program.directory, program.exclude);
-    const output = (program.json ? JSON.stringify(res, null, 4) : generateTable(res, program.directory));
-    console.log(output);
+    const outputPromises = program.directory.map(async baseDir =>
+      Object({
+        baseDir,
+        table: await getTable(baseDir, program.exclude),
+      })
+    );
+    const outputList = await Promise.all(outputPromises);
+
+    if (program.json) {
+      const outputHash = outputList.reduce((acc, item) => {
+        acc[item.baseDir] = item.table;
+        return acc;
+      }, {});
+      const outputJson = JSON.stringify(outputHash, null, 4);
+      console.log(outputJson);
+    } else {
+      console.log('');
+      outputList.forEach(item => {
+        const outputTable = generateTable(item.table, item.baseDir);
+        console.log(`DIR: ${item.baseDir}\n\n${outputTable}\n`);
+      });
+    }
 
   } catch (err) {
     console.error(err);
