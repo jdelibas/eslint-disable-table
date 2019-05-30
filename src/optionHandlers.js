@@ -2,7 +2,8 @@
 
 function commaSeparatedList (inputStr, defaultStr = null) {
   const str = inputStr || defaultStr || null;
-  return (str ? str.split(',') : []);
+  const list = (str ? str.split(',') : []);
+  return list.map(item => item.trim());
 }
 
 module.exports = {
