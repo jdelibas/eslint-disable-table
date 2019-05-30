@@ -5,11 +5,7 @@
 const program = require('commander')
 const getTable = require('../src')
 const generateTable = require('../src/generateTable')
-
-function commaSeparatedList (inputStr, defaultStr = null) {
-  const str = inputStr || defaultStr || null;
-  return (str ? str.split(',') : []);
-}
+const { commaSeparatedList } = require('../src/optionHandlers');
 
 program
   .option('-d, --directory <dir>', 'directory to inspect', commaSeparatedList, process.cwd())
@@ -26,6 +22,8 @@ program.on('--help', () => {
 })
 
 program.parse(process.argv)
+
+
 
 getTable(program.directory, program.exclude)
   .then(res => {
