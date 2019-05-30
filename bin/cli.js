@@ -27,6 +27,7 @@ const { commaSeparatedList } = require('../src/optionHandlers');
 
     program.parse(process.argv);
 
+    // Prepare the output.
     const outputPromises = program.directory.map(async baseDir =>
       Object({
         baseDir,
@@ -35,14 +36,14 @@ const { commaSeparatedList } = require('../src/optionHandlers');
     );
     const outputList = await Promise.all(outputPromises);
 
-    if (program.json) {
+    if (program.json) { // Output as JSON.
       const outputHash = outputList.reduce((acc, item) => {
         acc[item.baseDir] = item.table;
         return acc;
       }, {});
       const outputJson = JSON.stringify(outputHash, null, 4);
       console.log(outputJson);
-    } else {
+    } else { // Output as a pretty table.
       console.log('');
       outputList.forEach(item => {
         const outputTable = generateTable(item.table, item.baseDir);
