@@ -33,7 +33,7 @@ const { commaSeparatedList } = require('../src/optionHandlers');
 
   } catch (err) {
     console.log(err);
-    process.exit(1);
+    setTimeout(process.exit.bind(process, 1), 250); // Logging is async and takes some time to complete.
   }
 
 }());
